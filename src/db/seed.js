@@ -5,7 +5,7 @@ const fs = require('fs').promises //helps us get access to promises when dealing
 //import our database [x]
 //import the model that we are trying to import our data into [x]
 const {db} = require('./db')
-const { Show, User } = require('./models/index')
+const { Show, User } = require('../models/index')
 
 
 //write our seed function -> take our json file, create rows with our data into it
@@ -33,6 +33,5 @@ const seed = async () => {
 
     console.log("Shows and User database info populated!")
 }
-
 //export my seed function
 module.exports = seed;
