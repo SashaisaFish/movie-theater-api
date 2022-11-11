@@ -5,8 +5,10 @@ const app = express();
 // import routers
 const userRouter = require("./routes/users");
 const showRouter = require("./routes/shows");
+// import middleware
+const {checkStatus, checkRating} = require('./middleware')
 // import db
-const db = require("./db/db");
+const {db} = require("./db/db");
 //import seed
 const seed = require("./db/seed");
 //import express validator

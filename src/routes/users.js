@@ -3,12 +3,13 @@ const { Router } = require("express");
 // create userRouter
 const userRouter = Router();
 // import User and Show models
-const { User } = require("../models");
-const { Show } = require("../models");
+const { User, Show } = require("../models");
+// import middleware
+const { checkStatus, checkRating } = require("../middleware");
 
 // GET all users from /users
 userRouter.get("/", async (req, res) => {
-	const allUsers = await User.findAll();
+	const allUsers = await User.findAll({ attributes: ["username"] });
 	res.status(200).send(allUsers);
 });
 
@@ -36,8 +37,10 @@ userRouter.get("/:userId/shows", async (req, res) => {
 	if (!user) {
 		return res.sendStatus(404);
 	}
-	//const shows = user.Shows;
-	res.status(200).send(user.shows);
+	const showsList = user.shows;
+	const sendData = showsList.map((s) => s.title);
+	//const sendData = user.shows;
+	res.status(200).send(sendData);
 });
 
 // PUT update and add a show if a user has watched it from /users/:userId/shows/:showId
@@ -54,4 +57,21 @@ userRouter.put("/:userId/shows/:showId", async (req, res) => {
 	res.sendStatus(201);
 });
 
+// PUT update and add new user (expect username and password in body as object)
+userRouter.put("/new", async (req, res) => {
+	let usernameParam = req.body.username;
+	let passwordParam = req.body.password;
+	if (!usernameParam || !passwordParam) {
+		return res.sendStatus(400);
+	}
+	let exists = await User.findOne({ where: { username: usernameParam } });
+	if (exists) {
+		return res.status(400).send("User already exists");
+	}
+	await User.create({
+		username: usernameParam,
+		password: passwordParam,
+	});
+	res.sendStatus(201);
+});
 module.exports = userRouter;

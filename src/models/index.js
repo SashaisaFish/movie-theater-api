@@ -1,7 +1,7 @@
-const { Show } = require('./Show')
-const { User } = require('./User')
+const { Show } = require("./Show");
+const { User } = require("./User");
 
-Show.belongsTo(User)
-User.hasMany(Show)
+Show.belongsToMany(User, { through: "User_Shows" });
+User.belongsToMany(Show, { through: "User_Shows" });
 
-module.exports = {Show, User}
+module.exports = { Show, User };
